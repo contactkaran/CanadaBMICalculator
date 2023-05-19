@@ -37,4 +37,11 @@ class AppViewModel: ViewModel() {
         bmiCalculation()
     }
 
+    fun changeWeight(weight: String) {
+        state = state.copy(
+            weight = weight
+        )
+        bmiCalculation()
+    }
+
 }

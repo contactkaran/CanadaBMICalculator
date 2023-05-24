@@ -23,6 +23,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -43,8 +44,6 @@ import com.example.composebmicalculator.models.AppViewModel
 import com.example.composebmicalculator.ui.theme.ComposeBMICalculatorTheme
 import com.example.composebmicalculator.ui.theme.background
 import com.example.composebmicalculator.ui.theme.green
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,13 +51,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeBMICalculatorTheme {
                 val viewModel = AppViewModel()
-
-                MainScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = background),
-                    viewModel = viewModel
-                )
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    MainScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = background),
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }
@@ -70,7 +70,8 @@ fun BaseNote() {
         text = "Note: For persons 65 years and older the 'normal' range may begin slightly above BMI 18.5 and extend into the 'overweight' range.",
         fontStyle = FontStyle.Italic,
         fontSize = 8.sp,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = Color.White
     )
 }
 
@@ -80,8 +81,8 @@ fun MainScreen(
     modifier: Modifier = Modifier, viewModel: AppViewModel
 ) {
     val state = viewModel.state
-    var weight = state.weight
     var height = state.height
+    var weight = state.weight
     var calculatedBMI = state.calculatedBMI
     var context = LocalContext.current
     var classification = state.classification
@@ -89,89 +90,110 @@ fun MainScreen(
 //    decimalFormat.roundingMode = RoundingMode.CEILING
     val cardColor = classification.color
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = "Canadian BMI calculator", style = TextStyle(
-                color = green,
-                fontStyle = FontStyle.Normal,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Divider(
+    Column(
+        modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            color = Color.LightGray,
-            thickness = 1.dp
+                .fillMaxWidth()
+                .background(color = Color.Yellow)
+                .padding(top = 10.dp)
+                .align(Alignment.CenterHorizontally),
+            shape = RoundedCornerShape(bottomStart = 15.dp, bottomEnd = 15.dp)
+        ) {
+            Text(
+                text = "Canadian BMI calculator",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                style = TextStyle(
+                    color = green,
+                    fontStyle = FontStyle.Normal,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+        Divider(
+            modifier = Modifier.fillMaxWidth(), color = Color.LightGray, thickness = 1.dp
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(
+            TextField(
                 value = height,
                 onValueChange = {
                     if (state.height.isBlank() && it == ".") {
                         Toast.makeText(
-                            context,
-                            "Please enter your Height in centimeters",
-                            Toast.LENGTH_SHORT
+                            context, "Please enter your Height in centimeters", Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         viewModel.changeHeight(height)
                     }
                 },
-                label = { "Your height" },
                 textStyle = TextStyle(
                     fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp,
-                        color = Color.Black,
-                        shape = TextFieldDefaults.outlinedShape
-                    ),
+                label = {
+                    Text(
+                        "Your Height", color = Color.White
+                    )
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = green,
                     unfocusedBorderColor = Color.Green,
                     disabledBorderColor = Color.Blue,
-                    containerColor = Color.Black
+                    containerColor = background
                 )
             )
-            Spacer(modifier = Modifier.width(3.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "cm", fontSize = 14.sp, color = Color.White, fontWeight = FontWeight.Normal
+                text = "cm",
+                fontSize = 14.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Normal
             )
         }
-        Spacer(modifier = Modifier.height(3.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextField(
                 value = weight,
                 onValueChange = {
                     if (state.weight.isBlank() && it == ".") {
-                        Toast.makeText(context, "Enter your weight", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context, "Please enter your weight in Kilograms", Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         viewModel.changeWeight(it)
                     }
                 },
-                label = { "Your weight" },
                 textStyle = TextStyle(
                     fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text(
+                        "Your Weight", color = Color.White
+                    )
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = green,
-                    unfocusedIndicatorColor = Color.White,
-                    containerColor = Color.Black
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = green,
+                    unfocusedBorderColor = Color.Green,
+                    disabledBorderColor = Color.Blue,
+                    containerColor = background
                 )
             )
-            Spacer(modifier = Modifier.width(3.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "kg", fontSize = 14.sp, color = Color.White, fontWeight = FontWeight.Normal
             )
         }
-        Spacer(modifier = Modifier.height(3.dp))
+        Spacer(modifier = Modifier.height(10.dp))
+
+
+
+        //TODO- Work needed
+
+
         Row(modifier = Modifier.fillMaxWidth(1.0f)) {
             Column(modifier = Modifier.fillMaxWidth(0.75f)) {
                 Text(
@@ -235,6 +257,13 @@ fun MainScreen(
                     .align(Alignment.BottomCenter)
             ) {
                 BMIChart()
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 5.dp)
+            ) {
                 BaseNote()
             }
         }

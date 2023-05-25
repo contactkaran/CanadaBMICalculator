@@ -5,8 +5,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -51,7 +45,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeBMICalculatorTheme {
                 val viewModel = AppViewModel()
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color.Black
+                        ), color = MaterialTheme.colorScheme.background
+                ) {
                     MainScreen(
                         modifier = Modifier
                             .fillMaxSize()
@@ -69,7 +69,7 @@ fun BaseNote() {
     Text(
         text = "Note: For persons 65 years and older the 'normal' range may begin slightly above BMI 18.5 and extend into the 'overweight' range.",
         fontStyle = FontStyle.Italic,
-        fontSize = 8.sp,
+        fontSize = 12.sp,
         textAlign = TextAlign.Center,
         color = Color.White
     )
@@ -86,36 +86,20 @@ fun MainScreen(
     var calculatedBMI = state.calculatedBMI
     var context = LocalContext.current
     var classification = state.classification
-//    val decimalFormat = DecimalFormat("*.*")
-//    decimalFormat.roundingMode = RoundingMode.CEILING
-    val cardColor = classification.color
 
     Column(
         modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color.Yellow)
-                .padding(top = 10.dp)
-                .align(Alignment.CenterHorizontally),
-            shape = RoundedCornerShape(bottomStart = 15.dp, bottomEnd = 15.dp)
-        ) {
-            Text(
-                text = "Canadian BMI calculator",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                style = TextStyle(
-                    color = green,
-                    fontStyle = FontStyle.Normal,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
-                )
+        Text(
+            text = "Canadian BMI calculator",
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp),
+            textAlign = TextAlign.Center,
+            style = TextStyle(
+                color = green,
+                fontStyle = FontStyle.Normal,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
-        }
-        Divider(
-            modifier = Modifier.fillMaxWidth(), color = Color.LightGray, thickness = 1.dp
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextField(
@@ -126,7 +110,7 @@ fun MainScreen(
                             context, "Please enter your Height in centimeters", Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        viewModel.changeHeight(height)
+                        viewModel.changeHeight(it)
                     }
                 },
                 textStyle = TextStyle(
@@ -134,23 +118,20 @@ fun MainScreen(
                 ),
                 label = {
                     Text(
-                        "Your Height", color = Color.White
+                        "Your Height in cm", color = Color.White
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = green,
-                    unfocusedBorderColor = Color.Green,
-                    disabledBorderColor = Color.Blue,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = green,
+                    unfocusedIndicatorColor = Color.Green,
+                    disabledIndicatorColor = Color.Blue,
                     containerColor = background
                 )
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "cm",
-                fontSize = 14.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Normal
+                text = "cm", fontSize = 14.sp, color = Color.Green, fontWeight = FontWeight.Normal
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -171,101 +152,62 @@ fun MainScreen(
                 ),
                 label = {
                     Text(
-                        "Your Weight", color = Color.White
+                        "Your Weight in kg", color = Color.White
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = green,
-                    unfocusedBorderColor = Color.Green,
-                    disabledBorderColor = Color.Blue,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = green,
+                    unfocusedIndicatorColor = Color.Green,
+                    disabledIndicatorColor = Color.Blue,
                     containerColor = background
                 )
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "kg", fontSize = 14.sp, color = Color.White, fontWeight = FontWeight.Normal
+                text = "kg", fontSize = 14.sp, color = Color.Green, fontWeight = FontWeight.Normal
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
-
-
-
-        //TODO- Work needed
-
-
-        Row(modifier = Modifier.fillMaxWidth(1.0f)) {
-            Column(modifier = Modifier.fillMaxWidth(0.75f)) {
-                Text(
-                    text = classification.categoryDesc,
-                    color = classification.color,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Column(modifier = Modifier.fillMaxWidth(0.25f)) {
-                    Card(
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .background(color = cardColor),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        shape = RoundedCornerShape(15.dp)
-                    ) {}
-                }
-            }
-        }
-        Spacer(modifier = Modifier.fillMaxWidth())
-        Box(contentAlignment = Alignment.Center) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)
-            ) {
-                Text(
-                    text = classification.toString(),
-                    color = classification.color,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.padding(top = 55.dp, bottom = 55.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                ) {
-                    Text(
-                        text = calculatedBMI.toString(),
-                        color = classification.color,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-            Divider(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                color = Color.LightGray,
-                thickness = 1.dp
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 15.dp)
+        ) {
+            Text(
+                textAlign = TextAlign.Center,
+                text = classification.categoryDesc,
+                modifier = Modifier.fillMaxWidth(),
+                color = classification.color,
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            ) {
-                BMIChart()
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 5.dp)
-            ) {
-                BaseNote()
-            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            textAlign = TextAlign.Center,
+            text = String.format("%.1f", calculatedBMI),
+            modifier = Modifier.fillMaxWidth(),
+            color = classification.color,
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Divider(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            color = Color.LightGray,
+            thickness = 5.dp
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            BMIChart()
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            BaseNote()
         }
     }
 }

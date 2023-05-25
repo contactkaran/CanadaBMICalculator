@@ -26,7 +26,7 @@ Note: For persons 65 years and older the 'normal' range may begin slightly above
 
 open class Classification(val categoryDesc: String, val color: Color) {
 
-    object BLANK: Classification("", Color.DarkGray)
+    object BLANK: Classification("", Color.White)
 
     object Underweight : Classification("Underweight", blue)
 
@@ -40,9 +40,6 @@ open class Classification(val categoryDesc: String, val color: Color) {
 
     object ObeseClass3 : Classification("Obese Class III", red)
 
-//    object BMICalcError: Classification("BMI calculation error", red)
-
-
     companion object
     fun classificationBMI(scoreBMI: Float): Classification {
         return when(scoreBMI){
@@ -50,8 +47,8 @@ open class Classification(val categoryDesc: String, val color: Color) {
             in Double.MIN_VALUE..24.9 -> NormalWeight
             in Double.MIN_VALUE..29.9 -> Overweight
             in Double.MIN_VALUE..34.9 -> ObeseClass1
-            in Double.MIN_VALUE..39.9 -> ObeseClass1
-            else ->  ObeseClass1
+            in Double.MIN_VALUE..39.9 -> ObeseClass2
+            else ->  ObeseClass3
 
         }
     }

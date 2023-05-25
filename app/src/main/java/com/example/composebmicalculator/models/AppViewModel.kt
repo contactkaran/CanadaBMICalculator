@@ -13,12 +13,12 @@ class AppViewModel: ViewModel() {
     var state by mutableStateOf(UserBMI())
 
     private fun bmiCalculation(){
-        state = if(state.height.isBlank() && state.weight.isBlank()){
+        state = if(state.height.isNotBlank() && state.weight.isNotBlank()){
             val heightInMeters = state.height.toFloat() / 100
-            val calculatingBMI = state.weight.toFloat() / (heightInMeters * heightInMeters)
-            val findingBMIClass = classificationBMI(calculatingBMI)
+            val BmiCalculation = state.weight.toFloat() / (heightInMeters * heightInMeters)
+            val findingBMIClass = classificationBMI(BmiCalculation)
             state.copy(
-                calculatedBMI = calculatingBMI,
+                calculatedBMI = BmiCalculation,
                 classification = findingBMIClass
             )
         } else {
@@ -30,7 +30,6 @@ class AppViewModel: ViewModel() {
     }
 
     fun changeHeight(height: String) {
-        TODO("Not yet implemented")
         state = state.copy(
             height = height
         )
